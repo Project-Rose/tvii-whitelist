@@ -1,0 +1,42 @@
+{
+    "domain": "projectrose.cafe",
+    "http": {
+        "port": 6969
+    },
+    "whitelist": {
+        "developerWhitelist": {
+            "urls": {
+                "white-domain": "https://tvii.d1.us.projectrose.cafe",
+                "gold-domain": "https://tvii.d1.us.projectrose.cafe",
+                "top-page": "https://tvii.d1.us.projectrose.cafe",
+                "white-acr": "tvii-acr.d1.us.projectrose.cafe"
+            },
+            "pids": [
+                1638672008,
+                1174554532,
+                1799690402,
+                1299119589,
+                1587288051
+            ]
+        },
+        "stagingWhitelist": {
+            "urls": {
+                "white-domain": "https://tvii.s1.us.projectrose.cafe",
+                "gold-domain": "https://tvii.s1.us.projectrose.cafe",
+                "top-page": "https://tvii.s1.us.projectrose.cafe",
+                "white-acr": "tvii-acr.s1.us.projectrose.cafe"
+            },
+            "pids": [
+                1154065250
+            ]
+        },
+        "liveWhitelist": {
+            "urls": {
+                "white-domain": "https://tvii.1.us.projectrose.cafe",
+                "gold-domain": "https://tvii.l1.us.projectrose.cafe",
+                "top-page": "https://tvii.l1.us.projectrose.cafe",
+                "white-acr": "tvii-acr.l1.us.projectrose.cafe"
+            }
+        }
+    }
+}
