@@ -6,10 +6,10 @@
     "whitelist": {
         "developerWhitelist": {
             "urls": {
-                "white-domain": "https://tvii.d1.us.projectrose.cafe",
-                "gold-domain": "https://tvii.d1.us.projectrose.cafe",
-                "top-page": "https://tvii.d1.us.projectrose.cafe",
-                "white-acr": "tvii-acr.d1.us.projectrose.cafe"
+                "white-domain": "https://web.d1.us.vino.wup.app.projectrose.cafe",
+                "gold-domain": "https://web.d1.us.vino.wup.app.projectrose.cafe",
+                "top-page": "https://web.d1.us.vino.wup.app.projectrose.cafe/",
+                "white-acr": "acr.d1.us.vino.wup.app.projectrose.cafe"
             },
             "pids": [
                 1638672008,
@@ -21,10 +21,10 @@
         },
         "stagingWhitelist": {
             "urls": {
-                "white-domain": "https://tvii.s1.us.projectrose.cafe",
-                "gold-domain": "https://tvii.s1.us.projectrose.cafe",
-                "top-page": "https://tvii.s1.us.projectrose.cafe",
-                "white-acr": "tvii-acr.s1.us.projectrose.cafe"
+                "white-domain": "https://stgweb.l1.us.vino.wup.app.projectrose.cafe/",
+                "gold-domain": "https://stgweb.l1.us.vino.wup.app.projectrose.cafe/",
+                "top-page": "https://stgweb.l1.us.vino.wup.app.projectrose.cafe",
+                "white-acr": "stgacr.l1.us.vino.wup.app.projectrose.cafe"
             },
             "pids": [
                 1154065250
@@ -32,10 +32,10 @@
         },
         "liveWhitelist": {
             "urls": {
-                "white-domain": "https://tvii.1.us.projectrose.cafe",
-                "gold-domain": "https://tvii.l1.us.projectrose.cafe",
-                "top-page": "https://tvii.l1.us.projectrose.cafe",
-                "white-acr": "tvii-acr.l1.us.projectrose.cafe"
+                "white-domain": "https://web.l1.us.vino.wup.app.projectrose.cafe/",
+                "gold-domain": "https://web.l1.us.vino.wup.app.projectrose.cafe",
+                "top-page": "https://web.l1.us.vino.wup.app.projectrose.cafe",
+                "white-acr": "acr.l1.us.vino.wup.app.projectrose.cafe"
             }
         }
     }
