@@ -11,7 +11,7 @@ const endsWithSlash = (url: string): string => {
 };
 
 
-app.get("/whitelist(.txt)?", (req: Request, res: Response) => {
+app.get("/", (req: Request, res: Response) => {        // Nginx will run these at the whitelist endpoint
     const country = req.query.country;
     const pidHeader = req.header("X-Nintendo-Current-Principal-ID");
     const pid = pidHeader ? parseInt(pidHeader, 16) : null;
