@@ -1,0 +1,34 @@
+{
+  "domain": "the-domain",
+  "http": {
+    "port": 80
+  },
+  "whitelist": {
+    "developerWhitelist": {
+      "urls": {
+        "white-domain": "white-domain-for-dev",
+        "gold-domain": "usually-same-as-gold-domain-for-dev",
+        "top-page": "usually-same-for-dev",
+        "white-acr": "acr-url-for-dev"
+      },
+      "pids": ["a-list-of-numbers-of-pids-to-accept"]
+    },
+    "stagingWhitelist": {
+      "urls": {
+        "white-domain": "white-domain-for-staging",
+        "gold-domain": "usually-same-as-gold-domain-for-staging",
+        "top-page": "usually-same-for-staging",
+        "white-acr": "acr-url-for-staging"
+      },
+      "pids": ["a-list-of-numbers-of-pids-to-accept-in-integer-form"]
+    },
+    "liveWhitelist": {
+      "urls": {
+        "white-domain": "white-domain-for-live",
+        "gold-domain": "usually-same-as-gold-domain-for-live",
+        "top-page": "usually-same-for-live",
+        "white-acr": "acr-url-for-live"
+      }
+    }
+  }
+}
