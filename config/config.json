@@ -6,10 +6,24 @@
     "whitelist": {
         "developerWhitelist": {
             "urls": {
-                "white-domain": "https://web.d1.us.vino.wup.app.projectrose.cafe",
-                "gold-domain": "https://web.d1.us.vino.wup.app.projectrose.cafe",
-                "top-page": "https://web.d1.us.vino.wup.app.projectrose.cafe/",
-                "white-acr": "acr.d1.us.vino.wup.app.projectrose.cafe"
+                "jp": {
+                    "white-domain": "https://tvii-dev.d1.jp.vino.wup.app.projectrose.cafe",
+                    "gold-domain": "https://tvii-dev.d1.jp.vino.wup.app.projectrose.cafe",
+                    "top-page": "https://tvii-dev.d1.jp.vino.wup.app.projectrose.cafe/",
+                    "white-acr": "acr-dev.d1.vino.wup.app.projectrose.cafe"
+                },
+                "us": {
+                    "white-domain": "https://tvii-dev.d1.us.vino.wup.app.projectrose.cafe",
+                    "gold-domain": "https://tvii-dev.d1.us.vino.wup.app.projectrose.cafe",
+                    "top-page": "https://tvii-dev.d1.us.vino.wup.app.projectrose.cafe/",
+                    "white-acr": "acr-dev.d1.vino.wup.app.projectrose.cafe"
+                }, 
+                "eu": {
+                    "white-domain": "https://tvii-dev.d1.us.vino.wup.app.projectrose.cafe",
+                    "gold-domain": "https://tvii-dev.d1.us.vino.wup.app.projectrose.cafe",
+                    "top-page": "https://tvii-dev.d1.us.vino.wup.app.projectrose.cafe",
+                    "white-acr": "acr-prod.l1.vino.wup.app.projectrose.cafe"
+                }
             },
             "pids": [
                 1638672008,
@@ -21,10 +35,24 @@
         },
         "stagingWhitelist": {
             "urls": {
-                "white-domain": "https://stgweb.l1.us.vino.wup.app.projectrose.cafe/",
-                "gold-domain": "https://stgweb.l1.us.vino.wup.app.projectrose.cafe/",
-                "top-page": "https://stgweb.l1.us.vino.wup.app.projectrose.cafe",
-                "white-acr": "stgacr.l1.us.vino.wup.app.projectrose.cafe"
+                "jp": {
+                    "white-domain": "https://tvii-stg.l1.jp.vino.wup.app.projectrose.cafe",
+                    "gold-domain": "https://tvii-stg.l1.jp.vino.wup.app.projectrose.cafe",
+                    "top-page": "https://tvii-stg.l1.jp.vino.wup.app.projectrose.cafe/",
+                    "white-acr": "acr-stg.l1.vino.wup.app.projectrose.cafe"
+                },
+                "us": {
+                    "white-domain": "https://tvii-stg.l1.us.vino.wup.app.projectrose.cafe",
+                    "gold-domain": "https://tvii-stg.l1.us.vino.wup.app.projectrose.cafe",
+                    "top-page": "https://tvii-stg.l1.us.vino.wup.app.projectrose.cafe/",
+                    "white-acr": "acr-stg.l1.vino.wup.app.projectrose.cafe"
+                }, 
+                "eu": {
+                    "white-domain": "https://tvii-stg.l1.us.vino.wup.app.projectrose.cafe",
+                    "gold-domain": "https://tvii-stg.l1.us.vino.wup.app.projectrose.cafe",
+                    "top-page": "https://tvii-stg.l1.us.vino.wup.app.projectrose.cafe/",
+                    "white-acr": "acr-stg.l1.vino.wup.app.projectrose.cafe"
+                }
             },
             "pids": [
                 1154065250
@@ -32,10 +60,24 @@
         },
         "liveWhitelist": {
             "urls": {
-                "white-domain": "https://web.l1.us.vino.wup.app.projectrose.cafe/",
-                "gold-domain": "https://web.l1.us.vino.wup.app.projectrose.cafe",
-                "top-page": "https://web.l1.us.vino.wup.app.projectrose.cafe",
-                "white-acr": "acr.l1.us.vino.wup.app.projectrose.cafe"
+                "jp": {
+                    "white-domain": "https://tvii-prod.l1.jp.vino.wup.app.projectrose.cafe",
+                    "gold-domain": "https://tvii-prod.l1.jp.vino.wup.app.projectrose.cafe",
+                    "top-page": "https://tvii-prod.l1.jp.vino.wup.app.projectrose.cafe",
+                    "white-acr": "acr-prod.l1.vino.wup.app.projectrose.cafe"
+                },
+                "us": {
+                    "white-domain": "https://tvii-prod.l1.us.vino.wup.app.projectrose.cafe",
+                    "gold-domain": "https://tvii-prod.l1.us.vino.wup.app.projectrose.cafe",
+                    "top-page": "https://tvii-prod.l1.us.vino.wup.app.projectrose.cafe/",
+                    "white-acr": "acr-prod.l1.vino.wup.app.projectrose.cafe"
+                }, 
+                "eu": {
+                    "white-domain": "https://tvii-prod.l1.eu.vino.wup.app.projectrose.cafe",
+                    "gold-domain": "https://tvii-prod.l1.eu.vino.wup.app.projectrose.cafe",
+                    "top-page": "https://tvii-prod.l1.eu.vino.wup.app.projectrose.cafe/",
+                    "white-acr": "acr-prod.l1.vino.wup.app.projectrose.cafe"
+                }
             }
         }
     }
