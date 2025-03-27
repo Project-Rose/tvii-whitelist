@@ -1,26 +1,11 @@
-FROM node:23-slim
+FROM oven/bun:latest
 
-RUN apt-get update && apt-get install -y python3 python3-pip build-essential
+WORKDIR /app
 
-# Install pnpm globally
-#RUN npm install -g pnpm
+COPY package.json bun.lock ./
 
-# Set the working directory in the container
-WORKDIR app/
+RUN bun install
 
-# Copy package.json and pnpm-lock.yaml to the working directory
-#COPY package.json pnpm-lock.yaml ./
+COPY . .
 
-# Install dependencies using pnpm
-#CMD ["pnpm, "install"]
-
-# Copy the rest of the application code
-#COPY . .
-
-# Expose the port the app runs on (optional)
-EXPOSE 80
-
-#CMD ["pnpm", "build"]
-# Command to run the application
-#CMD ["pnpm", "start"]
-CMD ["npm", "run", "start"]
+CMD ["bun", "run", "start"]
