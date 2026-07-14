@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="/css/vino.css" rel="stylesheet">
+  <title>About the incident of TVii</title>
+  <style>
+    p span.link {
+      color: #006eff;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+
+  <% if (!has_latest_rose) { %>
+  <div class="roseverse-div update" id="update-catcher">
+    <span id="update-message">
+    </span>
+  </div>
+  <% } %>
+
+  <div class="roseverse-div attcacher" id="roseverse-catch">
+    <img src="/img/rowie.png">
+    <div class="dev">
+      <span>Project Rosé Developer</span>
+      <b>David Joaq</b>
+    </div>
+    <span id="roseverse-attcacher"></span>
+  </div>
+
+  <p id="incident-text"></p>
+
+  <a navi_target href="/others.html" style="display: none;" class="button enter-viewer"></a>
+
+  <div class="roseverse-div" id="roseverse-details">
+    <span id="roseverse-text"></span>
+
+    <a navi_target class="rosev-image" id="image-10" href="/image_view?url=/img/miiverseImage10_huge.png&els=%23image-10">
+      <img class="promo" src="/img/miiverseImage10_preview.png">
+    </a>
+
+    <a navi_target class="rosev-image" id="image-1" href="/image_view?url=/img/miiverseImage1_huge.png&els=%23image-%0A1">
+      <img class="promo" src="/img/miiverseImage1_preview.png">
+    </a>
+    <a navi_target class="rosev-image" id="image-2" href="/image_view?url=/img/miiverseImage2_huge.png&els=%23image-%0A2">
+      <img class="promo" src="/img/miiverseImage2_preview.png">
+    </a>
+    <a navi_target class="rosev-image" id="image-3" href="/image_view?url=/img/miiverseImage3_huge.png&els=%23image-%0A3">
+      <img class="promo" src="/img/miiverseImage3_preview.png">
+    </a>
+    <a navi_target class="rosev-image" id="image-4" href="/image_view?url=/img/miiverseImage4_huge.png&els=%23image-%0A4">
+      <img class="promo" src="/img/miiverseImage4_preview.png">
+    </a>
+    <a navi_target class="rosev-image" id="image-5" href="/image_view?url=/img/miiverseImage5_huge.png&els=%23image-%0A5">
+      <img class="promo" src="/img/miiverseImage5_preview.png">
+    </a>
+    <a navi_target class="rosev-image" id="image-6" href="/image_view?url=/img/miiverseImage6_huge.png&els=%23image-%0A6">
+      <img class="promo" src="/img/miiverseImage7_preview.png">
+    </a>
+    <a navi_target class="rosev-image" id="image-8" href="/image_view?url=/img/miiverseImage8_huge.png&els=%23image-%0A8">
+      <img class="promo" src="/img/miiverseImage8_preview.png">
+    </a>
+    <a navi_target class="rosev-image" id="image-9" href="/image_view?url=/img/miiverseImage9_huge.png&els=%23image-%0A9">
+      <img class="promo" src="/img/miiverseImage9_preview.png">
+    </a>
+
+    <div class="analytics" style="display: none;">
+      <h1></h1>
+      <a href="javascript:void(0)" navi_target data-form="/v1/rose/analytics/tvii" class="option disabled"></a>
+      <a href="javascript:void(0)" navi_target data-form="/v1/rose/analytics/miiverse" class="option disabled"></a>
+      <a href="javascript:void(0)" navi_target data-form="/v1/rose/analytics/all" class="option disabled"></a>
+    </div>
+
+  </div>
+  <img src="/img/mario_sad.png">
+
+  <script>
+    window.addEventListener(
+      "focus",
+      function(e) {
+        var el = e.target;
+        var rectStr = vino.navi_getRect();
+        if (!el || !rectStr) return;
+
+        // Parse rect from Wii U API
+        var parts = rectStr.split(",");
+        if (parts.length < 4) return;
+
+        var naviRect = {
+          left: parseInt(parts[0], 10),
+          top: parseInt(parts[1], 10),
+          width: parseInt(parts[2], 10),
+          height: parseInt(parts[3], 10)
+        };
+        naviRect.right = naviRect.left + naviRect.width;
+        naviRect.bottom = naviRect.top + naviRect.height;
+
+        // Viewport bounds
+        var viewTop = 0;
+        var viewLeft = 0;
+        var viewRight = window.innerWidth;
+        var viewBottom = window.innerHeight;
+
+        var scrollX = 0;
+        var scrollY = 0;
+
+        // --- Vertical scrolling ---
+        if (naviRect.top < viewTop) {
+          // Align top
+          scrollY = naviRect.top - viewTop;
+        } else if (naviRect.bottom > viewBottom) {
+          if (naviRect.height > window.innerHeight) {
+            scrollY = naviRect.top - viewTop;
+          } else {
+            scrollY = naviRect.bottom - viewBottom;
+          }
+        }
+
+        // --- Horizontal scrolling ---
+        if (naviRect.left < viewLeft) {
+          scrollX = naviRect.left - viewLeft;
+        } else if (naviRect.right > viewRight) {
+          if (naviRect.width > window.innerWidth) {
+            scrollX = naviRect.left - viewLeft;
+          } else {
+            scrollX = naviRect.right - viewRight;
+          }
+        }
+
+        if (scrollX !== 0 || scrollY !== 0) {
+          window.scrollBy(scrollX, scrollY);
+        }
+      },
+      true
+    );
+
+
+    var maxSpeed = 40;
+    var deadZone = 0.05;
+
+    var inputCheck = setInterval(function() {
+      wiiu.gamepad.update();
+
+      var dx = wiiu.gamepad.lStickX;
+      var dy = wiiu.gamepad.lStickY;
+
+      if ((dx !== 0 && dy !== 0) || wiiu.gamepad.tpTouch === 1) {
+        vino.navi_reset();
+      }
+
+      var movedX = Math.abs(dx) > deadZone;
+      var movedY = Math.abs(dy) > deadZone;
+
+      if (!movedX && !movedY) return;
+
+      var sx = movedX ? dx * maxSpeed : 0;
+      var sy = movedY ? -dy * maxSpeed : 0; // invert Y
+
+      window.scrollBy(sx, sy);
+    }, 16);
+
+
+    // All translations
+
+    var betaNoticeTranslations = {
+      en: '<b>There is an early public beta currently ongoing! Make sure to update to the latest Aroma before updating!</b><br>' +
+        'A <b>brand new</b> Rosé Patcher update is available. This update (v1.2.7) is required to access the currently ongoing Nintendo TVii beta ' +
+        '(currently available only in the United States and Canada). After installing the update, make sure to restart your console.<br>' +
+        'You can update Rosé Patcher from the Homebrew App Store.',
+
+      fr: '<b>Une bêta publique anticipée est actuellement en cours ! Assurez-vous de mettre à jour Aroma vers la dernière version avant de procéder à la mise à jour !</b><br>' +
+        'Une <b>nouvelle mise à jour</b> de Rosé Patcher est disponible. Cette mise à jour (v1.2.7) est requise pour accéder à la bêta Nintendo TVii ' +
+        '(actuellement disponible uniquement aux États-Unis et au Canada). Après l’installation de la mise à jour, veuillez redémarrer votre console.<br>' +
+        'Vous pouvez mettre à jour Rosé Patcher depuis le Homebrew App Store.',
+
+      es: '<b>¡Actualmente hay una beta pública temprana en curso! ¡Asegúrate de actualizar Aroma a la versión más reciente antes de actualizar!</b><br>' +
+        'Hay disponible una <b>nueva actualización</b> de Rosé Patcher. Esta actualización (v1.2.7) es necesaria para acceder a la beta de Nintendo TVii ' +
+        '(actualmente disponible solo en Estados Unidos y Canadá). Después de instalar la actualización, asegúrate de reiniciar tu consola.<br>' +
+        'Puedes actualizar Rosé Patcher desde la Homebrew App Store.',
+
+      de: '<b>Derzeit läuft eine frühe öffentliche Beta! Stelle sicher, dass du Aroma vor dem Update auf die neueste Version aktualisierst!</b><br>' +
+        'Ein <b>neues Update</b> für Rosé Patcher ist verfügbar. Dieses Update (v1.2.7) ist erforderlich, um auf die laufende Nintendo TVii-Beta zuzugreifen ' +
+        '(derzeit nur in den Vereinigten Staaten und Kanada verfügbar). Starte deine Konsole nach der Installation bitte neu.<br>' +
+        'Du kannst Rosé Patcher über den Homebrew App Store aktualisieren.',
+
+      it: '<b>È attualmente in corso una beta pubblica anticipata! Assicurati di aggiornare Aroma all’ultima versione prima di aggiornare!</b><br>' +
+        'È disponibile un <b>nuovo aggiornamento</b> di Rosé Patcher. Questo aggiornamento (v1.2.7) è necessario per accedere alla beta di Nintendo TVii ' +
+        '(attualmente disponibile solo negli Stati Uniti e in Canada). Dopo aver installato l’aggiornamento, assicurati di riavviare la console.<br>' +
+        'Puoi aggiornare Rosé Patcher dal Homebrew App Store.',
+
+      pt: '<b>Uma beta pública antecipada está atualmente em andamento! Certifique-se de atualizar o Aroma para a versão mais recente antes de atualizar!</b><br>' +
+        'Uma <b>nova atualização</b> do Rosé Patcher está disponível. Esta atualização (v1.2.7) é necessária para acessar a beta do Nintendo TVii ' +
+        '(atualmente disponível apenas nos Estados Unidos e no Canadá). Após instalar a atualização, reinicie o console.<br>' +
+        'Você pode atualizar o Rosé Patcher pela Homebrew App Store.',
+
+      nl: '<b>Er is momenteel een vroege publieke bèta actief! Zorg ervoor dat je Aroma eerst naar de nieuwste versie bijwerkt voordat je update!</b><br>' +
+        'Er is een <b>nieuwe update</b> voor Rosé Patcher beschikbaar. Deze update (v1.2.7) is vereist om toegang te krijgen tot de Nintendo TVii-bèta ' +
+        '(momenteel alleen beschikbaar in de Verenigde Staten en Canada). Start je console opnieuw op na het installeren van de update.<br>' +
+        'Je kunt Rosé Patcher bijwerken via de Homebrew App Store.',
+
+      ru: '<b>В настоящее время проходит раннее публичное бета-тестирование! Перед обновлением обязательно обновите Aroma до последней версии!</b><br>' +
+        'Доступно новое обновление Rosé Patcher. Это обновление (v1.2.7) необходимо для доступа к текущей бета-версии Nintendo TVii ' +
+        '(в настоящее время доступно только в США и Канаде). После установки обновления обязательно перезапустите консоль.<br>' +
+        'Вы можете обновить Rosé Patcher через Homebrew App Store.',
+
+      ja: '<b>現在、早期パブリックベータが実施中です！更新する前に、Aroma を最新バージョンにアップデートしてください。</b><br>' +
+        'Rosé Patcher の新しいアップデートが利用可能です。このアップデート（v1.2.7）は、現在実施中の Nintendo TVii ベータ ' +
+        '（現在はアメリカとカナダのみで利用可能）にアクセスするために必要です。アップデート後は必ず本体を再起動してください。<br>' +
+        'Rosé Patcher は Homebrew App Store から更新できます。'
+    };
+
+    var translations = {
+
+      en: 'Either the service is not available in your region (Nintendo TVii is only available in the US and Canada right now), ' +
+        'or you have not updated Rosé Patcher to the latest version available in the Homebrew App Store. ' +
+        'Once you download the update, please make sure to restart the console.<br><br>' +
+        'Keep scrolling to discover more information about our other (and bigger) project, Roséverse.<br><br>' +
+        '<span class="link"><a href="javascript:void(0)">Join the Discord server for more information: https://discord.gg/yASvs3wfNa</a></span><br>' +
+        '<i>Press the HOME Button to exit the app.</i>',
+
+      fr: 'Soit le service n’est pas disponible dans votre région (Nintendo TVii est uniquement disponible aux États-Unis et au Canada pour le moment), ' +
+        'soit vous n’avez pas mis à jour Rosé Patcher vers la dernière version disponible sur le Homebrew App Store. ' +
+        'Une fois la mise à jour téléchargée, veuillez redémarrer la console.<br><br>' +
+        'Continuez à faire défiler pour découvrir plus d’informations sur notre autre projet (et plus grand), Roséverse.<br><br>' +
+        '<span class="link"><a href="javascript:void(0)">Rejoignez le serveur Discord pour plus d’informations : https://discord.gg/yASvs3wfNa</a></span><br>' +
+        '<i>Appuyez sur le bouton HOME pour quitter l\'application.</i>',
+
+      es: 'O el servicio no está disponible en tu región (Nintendo TVii solo está disponible en Estados Unidos y Canadá por ahora), ' +
+        'o no has actualizado Rosé Patcher a la última versión disponible en el Homebrew App Store. ' +
+        'Después de descargar la actualización, asegúrate de reiniciar la consola.<br><br>' +
+        'Sigue desplazándote para descubrir más información sobre nuestro otro proyecto (y más grande), Roséverse.<br><br>' +
+        '<span class="link"><a href="javascript:void(0)">Únete al servidor de Discord: https://discord.gg/yASvs3wfNa</a></span><br>' +
+        '<i>Presiona el botón HOME para cerrar la aplicación.</i>',
+
+      de: 'Entweder ist der Dienst in deiner Region nicht verfügbar (Nintendo TVii ist derzeit nur in den USA und Kanada verfügbar), ' +
+        'oder du hast Rosé Patcher nicht auf die neueste Version im Homebrew App Store aktualisiert. ' +
+        'Nachdem du das Update heruntergeladen hast, starte bitte die Konsole neu.<br><br>' +
+        'Scrolle weiter, um mehr über unser anderes (und größeres) Projekt Roséverse zu erfahren.<br><br>' +
+        '<span class="link"><a href="javascript:void(0)">Tritt dem Discord-Server bei: https://discord.gg/yASvs3wfNa</a></span><br>' +
+        '<i>Drücke die HOME-Taste, um die App zu schließen.</i>',
+
+      it: 'Il servizio potrebbe non essere disponibile nella tua regione (Nintendo TVii è disponibile solo negli Stati Uniti e in Canada al momento), ' +
+        'oppure non hai aggiornato Rosé Patcher all’ultima versione disponibile su Homebrew App Store. ' +
+        'Dopo aver scaricato l’aggiornamento, riavvia la console.<br><br>' +
+        'Continua a scorrere per scoprire di più sul nostro altro progetto (e più grande), Roséverse.<br><br>' +
+        '<span class="link"><a href="javascript:void(0)">Unisciti al server Discord: https://discord.gg/yASvs3wfNa</a></span><br>' +
+        '<i>Premi il pulsante HOME per chiudere l\'app.</i>',
+
+      pt: 'Ou o serviço não está disponível na sua região (Nintendo TVii está disponível apenas nos Estados Unidos e no Canadá no momento), ' +
+        'ou você não atualizou o Rosé Patcher para a versão mais recente disponível no Homebrew App Store. ' +
+        'Após baixar a atualização, reinicie o console.<br><br>' +
+        'Continue rolando para descobrir mais sobre nosso outro (e maior) projeto, Roséverse.<br><br>' +
+        '<span class="link"><a href="javascript:void(0)">Entre no Discord: https://discord.gg/yASvs3wfNa</a></span><br>' +
+        '<i>Pressione o botão HOME para fechar o aplicativo.</i>',
+
+      nl: 'Of de service is niet beschikbaar in jouw regio (Nintendo TVii is momenteel alleen beschikbaar in de Verenigde Staten en Canada), ' +
+        'of je hebt Rosé Patcher niet bijgewerkt naar de nieuwste versie in de Homebrew App Store. ' +
+        'Na het downloaden van de update, start de console opnieuw op.<br><br>' +
+        'Blijf scrollen om meer te ontdekken over ons andere (en grotere) project, Roséverse.<br><br>' +
+        '<span class="link"><a href="javascript:void(0)">Word lid van de Discord-server: https://discord.gg/yASvs3wfNa</a></span><br>' +
+        '<i>Druk op de HOME-knop om de app te sluiten.</i>',
+
+      ru: 'Либо сервис недоступен в вашем регионе (Nintendo TVii сейчас доступен только в США и Канаде), ' +
+        'либо вы не обновили Rosé Patcher до последней версии в Homebrew App Store. ' +
+        'После загрузки обновления обязательно перезапустите консоль.<br><br>' +
+        'Прокрутите вниз, чтобы узнать больше о нашем другом (и более крупном) проекте Roséverse.<br><br>' +
+        '<span class="link"><a href="javascript:void(0)">Присоединяйтесь к Discord: https://discord.gg/yASvs3wfNa</a></span><br>' +
+        '<i>Нажмите кнопку HOME, чтобы закрыть приложение.</i>',
+
+      ja: 'サービスはお住まいの地域では利用できない可能性があります（Nintendo TVii は現在、米国とカナダのみで利用可能です）、 ' +
+        'または Rosé Patcher を Homebrew App Store の最新バージョンに更新していない可能性があります。 ' +
+        'アップデートをダウンロードした後、必ず本体を再起動してください。<br><br>' +
+        'さらにスクロールして、私たちのもう一つの（そしてより大きな）プロジェクト Roséverse をご覧ください。<br><br>' +
+        '<span class="link"><a href="javascript:void(0)">詳細は Discord サーバーへ：https://discord.gg/yASvs3wfNa</a></span><br>' +
+        '<i>HOMEボタンを押してアプリを終了してください。</i>'
+    };
+
+    var roseverseTranslations = {
+
+      en: '<b>Roséverse</b> is our own Miiverse revival made by our talented team. ' +
+        'It works with Pretendo Network just fine and is designed to feel accurate to the original Miiverse experience. ' +
+        'We add new communities every week — a small but growing and dedicated community awaits you! We are waiting for you to join!<br><br>' +
+        'For more information, visit <b>miiverse.projectrose.cafe</b> in a web browser.<br><br>' +
+        'As of now, only the Wii U version has been released. The Nintendo 3DS and web versions of Roséverse are currently in active development.<br>' +
+        'For help and updates, please join our Discord server previously linked.',
+
+      fr: '<b>Roséverse</b> est notre propre revival de Miiverse créé par notre équipe talentueuse. ' +
+        'Il fonctionne parfaitement avec Pretendo Network et vise à recréer fidèlement l’expérience originale de Miiverse. ' +
+        'De nouvelles communautés sont ajoutées chaque semaine — une communauté petite mais active et passionnée vous attend ! Rejoignez-nous !<br><br>' +
+        'Pour plus d’informations, visitez <b>miiverse.projectrose.cafe</b> dans un navigateur web.<br><br>' +
+        'À ce jour, seule la version Wii U est disponible. Les versions Nintendo 3DS et web de Roséverse sont encore en développement actif.<br>' +
+        'Pour l’aide et les mises à jour, rejoignez le serveur Discord mentionné précédemment.',
+
+      es: '<b>Roséverse</b> es nuestro propio renacimiento de Miiverse creado por nuestro talentoso equipo. ' +
+        'Funciona perfectamente con Pretendo Network y está diseñado para ser fiel a la experiencia original de Miiverse. ' +
+        'Añadimos nuevas comunidades cada semana — ¡una comunidad pequeña pero creciente y dedicada te espera! ¡Te estamos esperando!<br><br>' +
+        'Para más información, visita <b>miiverse.projectrose.cafe</b> en un navegador web.<br><br>' +
+        'Por ahora, solo está disponible la versión de Wii U. Las versiones de Nintendo 3DS y web de Roséverse están en desarrollo activo.<br>' +
+        'Para ayuda y actualizaciones, únete al servidor de Discord mencionado anteriormente.',
+
+      de: '<b>Roséverse</b> ist unsere eigene Miiverse-Wiederbelebung, erstellt von unserem talentierten Team. ' +
+        'Es funktioniert problemlos mit Pretendo Network und ist dem ursprünglichen Miiverse-Erlebnis nachempfunden. ' +
+        'Jede Woche kommen neue Communities hinzu — eine kleine, aber wachsende und engagierte Community erwartet dich! Wir freuen uns auf dich!<br><br>' +
+        'Weitere Informationen findest du unter <b>miiverse.projectrose.cafe</b> im Webbrowser.<br><br>' +
+        'Aktuell ist nur die Wii U-Version verfügbar. Die Nintendo-3DS- und Web-Versionen von Roséverse befinden sich in aktiver Entwicklung.<br>' +
+        'Für Hilfe und Updates tritt bitte dem zuvor genannten Discord-Server bei.',
+
+      it: '<b>Roséverse</b> è il nostro revival di Miiverse creato dal nostro talentuoso team. ' +
+        'Funziona perfettamente con Pretendo Network ed è progettato per essere fedele all’esperienza originale di Miiverse. ' +
+        'Aggiungiamo nuove community ogni settimana — una community piccola ma in crescita e dedicata ti aspetta! Ti aspettiamo!<br><br>' +
+        'Per maggiori informazioni visita <b>miiverse.projectrose.cafe</b> nel browser web.<br><br>' +
+        'Al momento è disponibile solo la versione Wii U. Le versioni Nintendo 3DS e web di Roséverse sono in sviluppo attivo.<br>' +
+        'Per aiuto e aggiornamenti, unisciti al server Discord indicato in precedenza.',
+
+      pt: '<b>Roséverse</b> é a nossa própria recriação do Miiverse feita pela nossa talentosa equipe. ' +
+        'Ele funciona perfeitamente com Pretendo Network e é fiel à experiência original do Miiverse. ' +
+        'Novas comunidades são adicionadas toda semana — uma comunidade pequena, mas crescente e dedicada te espera! Estamos esperando por você!<br><br>' +
+        'Para mais informações, visite <b>miiverse.projectrose.cafe</b> em um navegador.<br><br>' +
+        'Atualmente, apenas a versão do Wii U foi lançada. As versões de Nintendo 3DS e web do Roséverse estão em desenvolvimento ativo.<br>' +
+        'Para ajuda e atualizações, entre no servidor Discord mencionado anteriormente.',
+
+      nl: '<b>Roséverse</b> is onze eigen Miiverse-revival gemaakt door ons getalenteerde team. ' +
+        'Het werkt perfect met Pretendo Network en is ontworpen om de originele Miiverse-ervaring nauwkeurig na te bootsen. ' +
+        'Elke week komen er nieuwe communities bij — een kleine maar groeiende en toegewijde community wacht op je! We wachten op je komst!<br><br>' +
+        'Voor meer informatie, bezoek <b>miiverse.projectrose.cafe</b> in een webbrowser.<br><br>' +
+        'Op dit moment is alleen de Wii U-versie uitgebracht. De Nintendo 3DS- en webversies van Roséverse zijn in actieve ontwikkeling.<br>' +
+        'Voor hulp en updates, join de eerder genoemde Discord-server.',
+
+      ru: '<b>Roséverse</b> — это наша собственная переработка Miiverse, созданная нашей талантливой командой. ' +
+        'Он отлично работает с Pretendo Network и максимально точно повторяет оригинальный опыт Miiverse. ' +
+        'Каждую неделю добавляются новые сообщества — небольшое, но растущее и преданное сообщество ждёт вас! Мы ждём вас!<br><br>' +
+        'Подробнее: <b>miiverse.projectrose.cafe</b> в браузере.<br><br>' +
+        'На данный момент выпущена только версия для Wii U. Версии для Nintendo 3DS и web находятся в активной разработке.<br>' +
+        'Для помощи и обновлений присоединяйтесь к Discord-серверу, указанному ранее.',
+
+      ja: '<b>Roséverse</b> は私たちの才能あるチームによって作られた Miiverse の復活プロジェクトです。' +
+        'Pretendo Network に完全対応しており、オリジナルの Miiverse に忠実な体験を目指しています。' +
+        '毎週新しいコミュニティが追加される、小さいながらも成長中で熱心なコミュニティです！ぜひ参加してください！<br><br>' +
+        '詳しくは <b>miiverse.projectrose.cafe</b> をブラウザでご覧ください。<br><br>' +
+        '現在は Wii U 版のみリリースされています。Nintendo 3DS 版および web 版の Roséverse は現在開発中です。<br>' +
+        'サポートや最新情報は、先ほどの Discord サーバーをご利用ください。'
+    };
+
+    var attcacherTranslations = {
+
+      en: 'Hello <b>%s</b>, thank you for downloading <b>Rosé Patcher</b>. ' +
+        'There may be additional steps required before you can access Nintendo TVii. ' +
+        'Please read this screen carefully.<br><br>' +
+        'If you are interested in Roséverse, please scroll below (we hope to see you there!).',
+
+      fr: 'Bonjour <b>%s</b>, merci d’avoir téléchargé <b>Rosé Patcher</b>. ' +
+        'Il peut y avoir des étapes supplémentaires nécessaires avant de pouvoir accéder à Nintendo TVii. ' +
+        'Veuillez lire attentivement cet écran.<br><br>' +
+        'Si vous êtes intéressé par Roséverse, veuillez faire défiler vers le bas (nous espérons vous y voir !).',
+
+      es: 'Hola <b>%s</b>, gracias por descargar <b>Rosé Patcher</b>. ' +
+        'Puede que haya pasos adicionales necesarios antes de poder acceder a Nintendo TVii. ' +
+        'Por favor, lee esta pantalla con atención.<br><br>' +
+        'Si estás interesado en Roséverse, desplázate hacia abajo (¡esperamos verte allí!).',
+
+      de: 'Hallo <b>%s</b>, vielen Dank für das Herunterladen von <b>Rosé Patcher</b>. ' +
+        'Möglicherweise sind zusätzliche Schritte erforderlich, bevor du auf Nintendo TVii zugreifen kannst. ' +
+        'Bitte lies diesen Bildschirm sorgfältig.<br><br>' +
+        'Wenn du an Roséverse interessiert bist, scrolle nach unten (wir hoffen, dich dort zu sehen!).',
+
+      it: 'Ciao <b>%s</b>, grazie per aver scaricato <b>Rosé Patcher</b>. ' +
+        'Potrebbero essere necessari passaggi aggiuntivi prima di poter accedere a Nintendo TVii. ' +
+        'Leggi attentamente questa schermata.<br><br>' +
+        'Se sei interessato a Roséverse, scorri verso il basso (speriamo di vederti lì!).',
+
+      pt: 'Olá <b>%s</b>, obrigado por baixar o <b>Rosé Patcher</b>. ' +
+        'Pode haver etapas adicionais necessárias antes de acessar o Nintendo TVii. ' +
+        'Por favor, leia esta tela com atenção.<br><br>' +
+        'Se você estiver interessado no Roséverse, role para baixo (esperamos ver você lá!).',
+
+      nl: 'Hallo <b>%s</b>, bedankt voor het downloaden van <b>Rosé Patcher</b>. ' +
+        'Er kunnen extra stappen nodig zijn voordat je toegang krijgt tot Nintendo TVii. ' +
+        'Lees dit scherm zorgvuldig.<br><br>' +
+        'Als je geïnteresseerd bent in Roséverse, scroll dan naar beneden (we hopen je daar te zien!).',
+
+      ru: 'Здравствуйте, <b>%s</b>, спасибо за загрузку <b>Rosé Patcher</b>. ' +
+        'Перед получением доступа к Nintendo TVii могут потребоваться дополнительные шаги. ' +
+        'Пожалуйста, внимательно прочитайте этот экран.<br><br>' +
+        'Если вас интересует Roséverse, прокрутите вниз (надеемся увидеть вас там!).',
+
+      ja: 'こんにちは <b>%s</b>、<b>Rosé Patcher</b> をダウンロードしていただきありがとうございます。' +
+        'Nintendo TVii にアクセスする前に追加の手順が必要な場合があります。' +
+        'この画面を注意してお読みください。<br><br>' +
+        'Roséverse に興味がある場合は、下にスクロールしてください（お待ちしています！）。'
+    };
+    var pollJumperText = {
+      en: 'View results of poll from friends/others',
+      fr: 'Voir les résultats du sondage des amis/autres',
+      es: 'Ver resultados de la encuesta de amigos/otros',
+      de: 'Ergebnisse der Umfrage von Freunden/anderen ansehen',
+      it: 'Visualizza i risultati del sondaggio di amici/altri',
+      pt: 'Ver resultados da enquete de amigos/outros',
+      nl: 'Resultaten van de poll van vrienden/anderen bekijken',
+      ru: 'Посмотреть результаты опроса друзей/других',
+      ja: 'フレンド／その他の投票結果を見る'
+    };
+
+    var analyticsTranslations = {
+      en: {
+        intro: "The polls have closed as of 01/21/2026, thank you, and everyone else for voting!",
+        buttons: {
+          tvii: "I am interested in the Nintendo TVii project (Wii U) for my region!",
+          miiverse: "I am interested in Roseverse (Wii U/3DS/Other)!",
+          all: "I am interested in Roseverse (Wii U/3DS/Other) and Nintendo TVii project (Wii U) for my region!"
+        },
+        feedback: {
+          success: "Your feedback was sent\nwith success.",
+          error: "An error has occurred\nwhile sending your feedback."
+        }
+      },
+      fr: {
+        intro: "Les sondages sont clos depuis le 21/01/2026, merci à vous et à tous les autres pour votre participation !",
+        buttons: {
+          tvii: "Je suis intéressé par le projet Nintendo TVii (Wii U) pour ma région !",
+          miiverse: "Je suis intéressé par Roseverse (Wii U/3DS/Autre) !",
+          all: "Je suis intéressé par Roseverse (Wii U/3DS/Autre) et le projet Nintendo TVii (Wii U) pour ma région !"
+        },
+        feedback: {
+          success: "Votre retour a été envoyé\navec succès.",
+          error: "Une erreur s'est produite\nlors de l'envoi de votre retour."
+        }
+      },
+      es: {
+        intro: "¡Las encuestas se cerraron el 21/01/2026, gracias a ti y a todos los demás por votar!",
+        buttons: {
+          tvii: "¡Estoy interesado en el proyecto Nintendo TVii (Wii U) para mi región!",
+          miiverse: "¡Estoy interesado en Roseverse (Wii U/3DS/Otro)!",
+          all: "¡Estoy interesado en Roseverse (Wii U/3DS/Otro) y en el proyecto Nintendo TVii (Wii U) para mi región!"
+        },
+        feedback: {
+          success: "Tu comentario fue enviado\ncon éxito.",
+          error: "Ocurrió un error\nal enviar tu comentario."
+        }
+      },
+      de: {
+        intro: "Die Umfragen sind ab dem 21.01.2026 geschlossen, danke an dich und alle anderen für die Teilnahme!",
+        buttons: {
+          tvii: "Ich bin am Nintendo TVii-Projekt (Wii U) für meine Region interessiert!",
+          miiverse: "Ich bin am Roseverse (Wii U/3DS/Andere) interessiert!",
+          all: "Ich bin am Roseverse (Wii U/3DS/Andere) und am Nintendo TVii-Projekt (Wii U) für meine Region interessiert!"
+        },
+        feedback: {
+          success: "Ihr Feedback wurde gesendet\nerfolgreich.",
+          error: "Beim Senden Ihres Feedbacks ist ein Fehler aufgetreten."
+        }
+      },
+      it: {
+        intro: "I sondaggi si sono chiusi il 21/01/2026, grazie a te e a tutti gli altri per aver votato!",
+        buttons: {
+          tvii: "Sono interessato al progetto Nintendo TVii (Wii U) per la mia regione!",
+          miiverse: "Sono interessato a Roseverse (Wii U/3DS/Altro)!",
+          all: "Sono interessato a Roseverse (Wii U/3DS/Altro) e al progetto Nintendo TVii (Wii U) per la mia regione!"
+        },
+        feedback: {
+          success: "Il tuo feedback è stato inviato\ncon successo.",
+          error: "Si è verificato un errore\nnell'invio del feedback."
+        }
+      },
+      pt: {
+        intro: "As enquetes foram encerradas em 21/01/2026, obrigado a você e a todos os outros por votarem!",
+        buttons: {
+          tvii: "Tenho interesse no projeto Nintendo TVii (Wii U) para minha região!",
+          miiverse: "Tenho interesse em Roseverse (Wii U/3DS/Outro)!",
+          all: "Tenho interesse em Roseverse (Wii U/3DS/Outro) e no projeto Nintendo TVii (Wii U) para minha região!"
+        },
+        feedback: {
+          success: "Seu feedback foi enviado\ncom sucesso.",
+          error: "Ocorreu um erro\nao enviar seu feedback."
+        }
+      },
+      nl: {
+        intro: "De peilingen zijn gesloten per 21/01/2026, dank aan jou en alle anderen voor het stemmen!",
+        buttons: {
+          tvii: "Ik ben geïnteresseerd in het Nintendo TVii-project (Wii U) voor mijn regio!",
+          miiverse: "Ik ben geïnteresseerd in Roseverse (Wii U/3DS/Overige)!",
+          all: "Ik ben geïnteresseerd in Roseverse (Wii U/3DS/Overige) en het Nintendo TVii-project (Wii U) voor mijn regio!"
+        },
+        feedback: {
+          success: "Je feedback is verzonden\nmet succes.",
+          error: "Er is een fout opgetreden\nbij het verzenden van je feedback."
+        }
+      },
+      ru: {
+        intro: "Опросы закрыты с 21/01/2026, спасибо вам и всем остальным за участие!",
+        buttons: {
+          tvii: "Меня интересует проект Nintendo TVii (Wii U) для моего региона!",
+          miiverse: "Меня интересует Roseverse (Wii U/3DS/Другое)!",
+          all: "Меня интересует Roseverse (Wii U/3DS/Другое) и проект Nintendo TVii (Wii U) для моего региона!"
+        },
+        feedback: {
+          success: "Ваш отзыв был отправлен\nуспешно.",
+          error: "Произошла ошибка\nпри отправке вашего отзыва."
+        }
+      },
+      ja: {
+        intro: "アンケートは2026/01/21をもって締め切られました。ご参加いただいた皆様、ありがとうございます！",
+        buttons: {
+          tvii: "私は自分の地域でNintendo TViiプロジェクト（Wii U）に興味があります！",
+          miiverse: "私はRoseverse（Wii U/3DS/その他）に興味があります！",
+          all: "私はRoseverse（Wii U/3DS/その他）およびNintendo TViiプロジェクト（Wii U）に興味があります！"
+        },
+        feedback: {
+          success: "あなたのフィードバックは送信されました\n成功しました",
+          error: "フィードバックの送信中にエラーが発生しました"
+        }
+      }
+    };
+
+    if (!window.vino) {
+      window.vino = {
+        info_getLanguage: function() {
+          return "en"; // test
+        },
+        act_getName: function(slotNo) {
+          return "little tom tucker"; // test
+        },
+        act_getCurrentSlotNo: function() {
+          return 1; // test
+        },
+        act_getPid: function() {
+          return 0;
+        },
+        act_getAgeDivision: function() {
+          return 0;
+        },
+        ls_getItem: function(item) {
+          return localStorage.getItem(item)
+        },
+        ls_setItem: function(item, val) {
+          localStorage.setItem(item, val)
+        },
+        soundPlayVolume: function(sfx, vol) {
+          console.log("sound")
+        },
+        lyt_startTouchEffect: function() {
+
+        },
+        lyt_setIsEnableClientLoadingIcon: function() {
+
+        },
+        lyt_setIsEnableWhiteMask: function() {
+
+        },
+      };
+    }
+
+    var slotNo = vino.act_getCurrentSlotNo();
+
+    function getUserName() {
+      return vino.act_getName(slotNo);
+    }
+
+    function getLanguage() {
+      var lang = vino.info_getLanguage();
+      switch (lang.toLowerCase()) {
+        case "jp":
+          return "ja";
+        case "sp":
+          return "es";
+        case "ge":
+          return "de";
+        case "du":
+          return "nl";
+        case "po":
+          return "pt";
+        default:
+          return lang.toLowerCase();
+      }
+    }
+
+    vino.lyt_setIsEnableWhiteMask(true);
+    vino.lyt_setIsEnableClientLoadingIcon(true);
+
+    var lang = getLanguage();
+    var p = document.getElementById("incident-text");
+    var p2 = document.getElementById("roseverse-text");
+    var analytictext = document.querySelector(".analytics>h1");
+
+    var attcacherSpan = document.getElementById("roseverse-attcacher");
+    var viewerButton = document.querySelector(".button.enter-viewer");
+
+    viewerButton.innerHTML = pollJumperText[lang] || pollJumperText.en;
+    viewerButton.addEventListener("click", function() {
+      this.focus();
+      if (!vino.navi_getRect()) {
+        vino.lyt_startTouchEffect();
+      }
+      vino.navi_setToFocused(true);
+      vino.soundPlayVolume("SE_WAVE_OK_SUB", 30);
+      vino.navi_decide();
+    });
+
+    var elements = document.querySelectorAll(".rosev-image");
+
+    for (var i = 0; i < elements.length; i++) {
+
+      elements[i].addEventListener("click", function() {
+
+        this.focus();
+
+        if (!vino.navi_getRect()) {
+          vino.lyt_startTouchEffect();
+        }
+
+        vino.navi_setToFocused(true);
+        vino.soundPlayVolume("SE_WAVE_OK", 30);
+        vino.navi_decide();
+
+      });
+
+    }
+
+    if (document.getElementById("update-message") != null) {
+      var attcacherUpdate = document.getElementById("update-message");
+      attcacherUpdate.innerHTML = betaNoticeTranslations[lang] || betaNoticeTranslations.en;
+    }
+
+    p.innerHTML = translations[lang] || translations.en;
+    p2.innerHTML = roseverseTranslations[lang] || roseverseTranslations.en;
+
+    var attText = attcacherTranslations[lang] || attcacherTranslations.en;
+    attcacherSpan.innerHTML = attText.replace("%s", getUserName());
+    analytictext.innerHTML = analyticsTranslations[lang].intro || analyticsTranslations["en"].intro;
+    var keyName = "voted_" + vino.act_getPid(slotNo);
+
+    var options = document.querySelectorAll(".analytics a");
+
+    // Check local storage
+    var votedEndpoint = vino.ls_getItem(keyName);
+    console.log(votedEndpoint)
+
+    for (var i = 0; i < options.length; i++) {
+      var optio = options[i];
+      console.log(i)
+      if (i === 0) {
+        optio.innerHTML = analyticsTranslations[lang].buttons.tvii || analyticsTranslations[en].buttons.tvii;
+      } else if (i === 1) {
+        optio.innerHTML = analyticsTranslations[lang].buttons.miiverse || analyticsTranslations[en].buttons.miiverse;
+      } else {
+        optio.innerHTML = analyticsTranslations[lang].buttons.all || analyticsTranslations[en].buttons.all;
+      }
+
+      // If already voted
+      if (votedEndpoint) {
+        console.log(optio.getAttribute("data-form"))
+        console.log(votedEndpoint)
+        if (optio.getAttribute("data-form") === votedEndpoint) {
+          // Mark the voted one as done
+          optio.classList.add("disabled");
+          optio.classList.add("voted");
+        } else {
+          // Other options just disabled
+          optio.classList.add("disabled");
+        }
+        continue; // Skip adding click handler
+      }
+
+    }
+
+    var attImg = document.querySelector("#roseverse-catch img");
+
+    // --- Preload all images once ---
+    var imgNormal = new Image();
+    var imgBlink = new Image();
+    var imgAltMain = new Image();
+    var imgAltBlink = new Image();
+    var imgTouch = new Image();
+
+    imgNormal.src = "/img/rowie.png";
+    imgBlink.src = "/img/rowie2.png";
+    imgAltMain.src = "/img/rowie2.png";
+    imgAltBlink.src = "/img/rowie4.png";
+    imgTouch.src = "/img/rowie3.png";
+
+    // --- State ---
+    var blinkInterval = null;
+    var inSpecialState = false;
+
+    // --- Blink loop function ---
+    function startBlink(mainImg, blinkImg) {
+      if (blinkInterval) {
+        clearInterval(blinkInterval);
+      }
+
+      attImg.src = mainImg.src;
+
+      blinkInterval = setInterval(function() {
+        attImg.src = blinkImg.src;
+
+        setTimeout(function() {
+          attImg.src = mainImg.src;
+        }, 400);
+      }, 3000);
+    }
+
+    startBlink(imgNormal, imgBlink);
+
+    setTimeout(function() {
+      inSpecialState = true;
+      startBlink(imgAltMain, imgAltBlink);
+    }, 120 * 1000);
+
+    attImg.onclick = function() {
+      if (!inSpecialState) return;
+
+      inSpecialState = false;
+
+      if (blinkInterval) {
+        clearInterval(blinkInterval);
+        blinkInterval = null;
+      }
+
+      attImg.src = imgTouch.src;
+
+      setTimeout(function() {
+        startBlink(imgNormal, imgBlink);
+      }, 3000);
+    };
+  </script>
+
+
+</body>
+
+</html>

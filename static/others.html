@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="/css/vino.css" rel="stylesheet">
+  <title>View Other People Votes</title>
+  <style>
+    p span.link {
+      color: #006eff;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+
+  <a href="/not_available" navi_target class="button return-from-viewer"></a>
+
+  <div class="vote-count">
+    <p id="votes-count-tvii"><span></span><span></span></p>
+    <p id="votes-count-miiverse"><span></span><span></span></p>
+    <p id="votes-count-both"><span></span><span></span></p>
+    <p id="votes-count-all"><span></span><span></span></p>
+  </div>
+
+  <div class="people-voters friends">
+    <p id="voted-title-friends"></p>
+  </div>
+
+  <div class="people-voters others">
+    <p id="voted-title-others"></p>
+  </div>
+
+  <a href="/" navi_target class="button return-from-viewer"></a>
+
+  <script>
+    if (!window.vino) {
+      window.vino = {
+        info_getLanguage: function() {
+          return "en"; // test
+        },
+        act_getName: function(slotNo) {
+          return "little tom tucker"; // test
+        },
+        act_getCurrentSlotNo: function() {
+          return 1; // test
+        },
+        act_getPid: function() {
+          return 1011256856;
+        },
+        act_getAgeDivision: function() {
+          return 0;
+        },
+        ls_getItem: function(item) {
+          return localStorage.getItem(item)
+        },
+        ls_setItem: function(item, val) {
+          localStorage.setItem(item, val)
+        },
+        soundPlayVolume: function(sfx, vol) {
+          console.log("sound")
+        },
+        fp_getFriendList: function() {
+          return "1";
+        },
+        lyt_startTouchEffect: function() {
+
+        }
+      };
+    }
+
+    var maxSpeed = 40;
+var deadZone = 0.05;
+
+var inputCheck = setInterval(function () {
+    wiiu.gamepad.update();
+
+    var dx = wiiu.gamepad.lStickX;
+    var dy = wiiu.gamepad.lStickY;
+
+    if ((dx !== 0 && dy !== 0) || wiiu.gamepad.tpTouch === 1) {
+        vino.navi_reset();
+    }
+
+    var movedX = Math.abs(dx) > deadZone;
+    var movedY = Math.abs(dy) > deadZone;
+
+    if (!movedX && !movedY) return;
+
+    var sx = movedX ? dx * maxSpeed : 0;
+    var sy = movedY ? -dy * maxSpeed : 0; // invert Y
+
+    window.scrollBy(sx, sy);
+}, 16);
+
+window.addEventListener(
+    "focus",
+    function (e) {
+        var el = e.target;
+        var rectStr = vino.navi_getRect();
+        if (!el || !rectStr) return;
+
+        // Parse rect from Wii U API
+        var parts = rectStr.split(",");
+        if (parts.length < 4) return;
+
+        var naviRect = {
+            left: parseInt(parts[0], 10),
+            top: parseInt(parts[1], 10),
+            width: parseInt(parts[2], 10),
+            height: parseInt(parts[3], 10)
+        };
+        naviRect.right = naviRect.left + naviRect.width;
+        naviRect.bottom = naviRect.top + naviRect.height;
+
+        // Viewport bounds
+        var viewTop = 0;
+        var viewLeft = 0;
+        var viewRight = window.innerWidth;
+        var viewBottom = window.innerHeight;
+
+        var scrollX = 0;
+        var scrollY = 0;
+
+        // --- Vertical scrolling ---
+        if (naviRect.top < viewTop) {
+            // Align top
+            scrollY = naviRect.top - viewTop;
+        } else if (naviRect.bottom > viewBottom) {
+            if (naviRect.height > window.innerHeight) {
+                scrollY = naviRect.top - viewTop;
+            } else {
+                scrollY = naviRect.bottom - viewBottom;
+            }
+        }
+
+        // --- Horizontal scrolling ---
+        if (naviRect.left < viewLeft) {
+            scrollX = naviRect.left - viewLeft;
+        } else if (naviRect.right > viewRight) {
+            if (naviRect.width > window.innerWidth) {
+                scrollX = naviRect.left - viewLeft;
+            } else {
+                scrollX = naviRect.right - viewRight;
+            }
+        }
+
+        if (scrollX !== 0 || scrollY !== 0) {
+            window.scrollBy(scrollX, scrollY);
+        }
+    },
+    true
+);
+
+
+
+
+    var voteTotalLabelAll = {
+      en: "Total votes until now:",
+      fr: "Total des votes à ce jour :",
+      es: "Votos totales hasta ahora:",
+      de: "Gesamtstimmen bisher:",
+      it: "Voti totali finora:",
+      pt: "Total de votos até agora:",
+      nl: "Totaal aantal stemmen:",
+      ru: "Всего голосов на данный момент:",
+      ja: "現在までの総投票数："
+    };
+
+
+    var voteTotalLabelMiiverse = {
+      en: "Votes for Roseverse:",
+      fr: "Votes pour Roseverse :",
+      es: "Votos por Roseverse:",
+      de: "Stimmen für Roseverse:",
+      it: "Voti per Roseverse:",
+      pt: "Votos para Roseverse:",
+      nl: "Stemmen voor Roseverse:",
+      ru: "Голоса за Roseverse:",
+      ja: "Roseverseへの投票数："
+    };
+
+    var voteTotalLabelTVii = {
+      en: "Votes for Nintendo TVii:",
+      fr: "Votes pour Nintendo TVii :",
+      es: "Votos por Nintendo TVii:",
+      de: "Stimmen für Nintendo TVii:",
+      it: "Voti per Nintendo TVii:",
+      pt: "Votos para Nintendo TVii:",
+      nl: "Stemmen voor Nintendo TVii:",
+      ru: "Голоса за Nintendo TVii:",
+      ja: "Nintendo TViiへの投票数："
+    };
+
+    var voteTotalLabelBoth = {
+      en: "Votes for Both:",
+      fr: "Votes pour les deux :",
+      es: "Votos por ambos:",
+      de: "Stimmen für beide:",
+      it: "Voti per entrambi:",
+      pt: "Votos para ambos:",
+      nl: "Stemmen voor beide:",
+      ru: "Голоса за оба:",
+      ja: "両方への投票数："
+    };
+
+
+    var votedReturn = {
+      en: 'Return to main page',
+      fr: 'Retour à la page principale',
+      es: 'Volver a la página principal',
+      de: 'Zurück zur Hauptseite',
+      it: 'Torna alla pagina principale',
+      pt: 'Voltar à página principal',
+      nl: 'Terug naar de hoofdpagina',
+      ru: 'Вернуться на главную страницу',
+      ja: 'メインページに戻る'
+    };
+
+    var votedFriends = {
+      en: 'Friends who voted:',
+      fr: 'Amis ayant voté :',
+      es: 'Amigos que votaron:',
+      de: 'Freunde, die abgestimmt haben:',
+      it: 'Amici che hanno votato:',
+      pt: 'Amigos que votaram:',
+      nl: 'Vrienden die hebben gestemd:',
+      ru: 'Друзья, проголосовавшие:',
+      ja: '投票したフレンド:'
+    };
+
+    var votedAll = {
+      en: 'Some other people who voted:',
+      fr: 'D’autres personnes ayant voté :',
+      es: 'Otras personas que votaron:',
+      de: 'Andere Personen, die abgestimmt haben:',
+      it: 'Altre persone che hanno votato:',
+      pt: 'Outras pessoas que votaram:',
+      nl: 'Andere mensen die hebben gestemd:',
+      ru: 'Другие проголосовавшие:',
+      ja: 'その他の投票者:'
+    };
+
+    var votedLabel = {
+      en: 'Voted, has a preference on:',
+      fr: 'A voté, préfère :',
+      es: 'Votó, tiene preferencia por:',
+      de: 'Hat abgestimmt, bevorzugt:',
+      it: 'Ha votato, preferisce:',
+      pt: 'Votou, prefere:',
+      nl: 'Heeft gestemd, voorkeur voor:',
+      ru: 'Проголосовал, предпочитает:',
+      ja: '投票済み、選択:'
+    };
+
+    var noFriendsVoted = {
+      en: "No friends have voted in the poll",
+      fr: "Aucun ami n'a voté dans le sondage",
+      es: "Ningún amigo ha votado en la encuesta",
+      de: "Keine Freunde haben an der Umfrage teilgenommen",
+      it: "Nessun amico ha votato al sondaggio",
+      pt: "Nenhum amigo votou na enquete",
+      nl: "Geen vrienden hebben gestemd in de peiling",
+      ru: "Ни один друг не голосовал в опросе",
+      ja: "友達はアンケートに投票していません"
+    };
+
+
+    var votedResponseBoth = {
+      en: 'Both',
+      fr: 'Les deux',
+      es: 'Ambos',
+      de: 'Beide',
+      it: 'Entrambi',
+      pt: 'Ambos',
+      nl: 'Beide',
+      ru: 'Оба',
+      ja: '両方'
+    };
+
+    var slotNo = vino.act_getCurrentSlotNo();
+
+    function getUserName() {
+      return vino.act_getName(slotNo);
+    }
+
+    function getLanguage() {
+      var lang = vino.info_getLanguage();
+      switch (lang.toLowerCase()) {
+        case "jp":
+          return "ja";
+        case "sp":
+          return "es";
+        case "ge":
+          return "de";
+        case "du":
+          return "nl";
+        case "po":
+          return "pt";
+        default:
+          return lang.toLowerCase();
+      }
+    }
+
+    var lang = getLanguage();
+
+    function voteText(voted) {
+      if (voted === "tvii") return 'Nintendo TVii';
+      if (voted === "miiverse") return 'Roseverse';
+      return votedResponseBoth[lang] || votedResponseBoth.en;
+    }
+
+    var countLabelOne = document.querySelector("#votes-count-tvii span:nth-child(1)");
+
+    var countLabelTwo = document.querySelector("#votes-count-miiverse span:nth-child(1)");
+
+    var countLabelThree = document.querySelector("#votes-count-all span:nth-child(1)");
+
+
+    var countLabelFour = document.querySelector("#votes-count-both span:nth-child(1)");
+
+    countLabelOne.innerHTML = voteTotalLabelTVii[lang] || voteTotalLabelTVii.en;
+    countLabelTwo.innerHTML = voteTotalLabelMiiverse[lang] || voteTotalLabelMiiverse.en;
+    countLabelThree.innerHTML = voteTotalLabelAll[lang] || voteTotalLabelAll.en;
+    countLabelFour.innerHTML = voteTotalLabelBoth[lang] || voteTotalLabelBoth.en;
+
+    var viewerButton = document.querySelectorAll(".button.return-from-viewer");
+    var titleFriends = document.querySelector("#voted-title-friends");
+    var titleAll = document.querySelector("#voted-title-others");
+
+    for (var x = 0; x < viewerButton.length; x++) {
+      viewerButton[x].innerHTML = votedReturn[lang] || votedReturn.en;
+      viewerButton[x].addEventListener("click", function() {
+        this.focus();
+        if (!vino.navi_getRect()) {
+          vino.lyt_startTouchEffect();
+        }
+        vino.navi_setToFocused(true);
+        vino.soundPlayVolume("SE_WAVE_OK_SUB", 30);
+        vino.navi_decide();
+      })
+    }
+
+    titleAll.innerHTML = votedAll[lang] || votedAll.en;
+    titleFriends.innerHTML = votedFriends[lang] || votedFriends.en;
+
+    function createVoterDiv(user) {
+      if (document.getElementById("voter-" + user.pid)) {
+        return null;
+      }
+      var div = document.createElement('div');
+      if (user.pid === vino.act_getPid(slotNo)) {
+        div.className = 'voter myself';
+      } else {
+        div.className = 'voter';
+      }
+      div.id = "voter-" + user.pid;
+      div.setAttribute("tabindex", "0")
+      div.setAttribute("navi_target", "");
+
+      var img = document.createElement('img');
+      img.className = 'mii';
+      img.src = '/img/mii?pid=' + user.pid;
+
+      img.addEventListener("click", function() {
+        vino.soundPlayVolume("SE_WORD_MII", 40);
+      })
+
+      var p = document.createElement('p');
+      p.innerHTML = user.mii_name;
+
+      var h1 = document.createElement('h1');
+      h1.innerHTML = votedLabel[lang] || votedLabel.en;
+
+      var h2 = document.createElement('h2');
+      h2.innerHTML = voteText(user.prefers);
+
+      div.appendChild(img);
+      div.appendChild(p);
+      div.appendChild(h1);
+      div.appendChild(h2);
+
+      return div;
+    }
+
+    function xhrGet(url, cb) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', url, true);
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          cb(JSON.parse(xhr.responseText));
+        }
+      };
+      xhr.send(null);
+    }
+
+    function loadFriendsVotes(callback) {
+      var container = document.querySelector('.people-voters.friends');
+      var friends = vino.fp_getFriendList();
+
+      if (!friends) {
+        titleFriends.innerHTML = noFriendsVoted[lang] || noFriendsVoted.en;
+        if (callback) callback(); // continue
+        return;
+      }
+
+      var pids = friends.split(',');
+      var url = '/v1/rose/analytics/get?type=friend';
+
+      for (var i = 0; i < pids.length; i++) {
+        url += '&pid=' + pids[i].replace(/\s/g, '');
+      }
+
+      xhrGet(url, function(data) {
+        if (!data || !data.length) {
+          titleFriends.innerHTML = noFriendsVoted[lang] || noFriendsVoted.en;
+        } else {
+          for (var i = 0; i < data.length; i++) {
+            var div = createVoterDiv(data[i]);
+            if (div) container.appendChild(div); // only append if div exists
+          }
+        }
+
+        if (callback) callback(); // call next step
+      });
+    }
+
+    function loadOtherVotes(callback) {
+      var container = document.querySelector('.people-voters.others');
+      var url = '/v1/rose/analytics/get?type=all&limit=100';
+
+      xhrGet(url, function(data) {
+        if (!data || !data.length) return;
+
+        for (var i = 0; i < data.length; i++) {
+          var div = createVoterDiv(data[i]);
+          if (div) container.appendChild(div); // skip duplicates
+        }
+
+        if (callback) callback(); // call next step
+      });
+    }
+
+    function loadVotesCount(callback) {
+      var container = document.querySelector('.vote-count');
+      var url = '/v1/rose/analytics/count';
+
+      xhrGet(url, function(data) {
+        if (!data) return;
+
+        container.querySelector("#votes-count-miiverse span:nth-child(2)").innerText = data.miiverse;
+        container.querySelector("#votes-count-tvii span:nth-child(2)").innerText = data.tvii;
+        container.querySelector("#votes-count-all span:nth-child(2)").innerText = data.tvii + data.miiverse + data.all;
+        container.querySelector("#votes-count-both span:nth-child(2)").innerText = data.all;
+
+        if (callback) callback(); // call next step
+      });
+    }
+
+    loadVotesCount(function() {
+      loadFriendsVotes(function() {
+        loadOtherVotes();
+      });
+    })
+
+    setTimeout(function() {
+      vino.requestGarbageCollect();
+    }, 100000);
+  </script>
+
+
+</body>
+
+</html>
